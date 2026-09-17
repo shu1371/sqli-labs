@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}访问日志 · 墨香书屋 SQLi Labs{% endblock %}
+{% block content %}
+<p><a href="/">← 返回关卡列表</a></p>
+<h1>访问日志</h1>
+<div class="card">
+  <div class="muted" style="font-size:12px; margin-bottom:10px;">记录最近 20 条访问（本页面为参数化查询，安全）。User-Agent 关卡注入的数据会出现在这里。</div>
+  <table>
+    <tr><th>时间</th><th>IP</th><th>User-Agent</th></tr>
+    {% for r in rows %}
+    <tr><td>{{ r.ts }}</td><td>{{ r.ip }}</td><td class="warn">{{ r.ua }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

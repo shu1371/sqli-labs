@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}关卡列表 · 墨香书屋 SQLi Labs{% endblock %}
+{% block content %}
+<h1>关卡列表</h1>
+<p class="muted" style="font-size:13px;">
+  这是一个仿 pikachu / DVWA 结构的 SQL 注入练习平台，主题为原创的「墨香书屋」在线书店。
+  共 {{ total }} 关，当前已通关 {{ solved }} 关。
+</p>
+
+<div class="card">
+  <div class="label">当前难度：{{ difficulty }}</div>
+  <form method="POST" action="/difficulty" class="inline">
+    {% for lv in ['low','medium','high','impossible'] %}
+    <button class="ghost" {% if lv == difficulty %}style="border-color:#38bdf8;color:#38bdf8"{% endif %} name="level" value="{{ lv }}">{{ lv }}</button>
+    {% endfor %}
+  </form>
+  <div class="muted" style="font-size:12px; margin-top:8px;">
+    low＝无过滤；medium＝转义单引号（数字型仍可注）；high＝再删除 union 关键词（试试 <code>uniunionon</code>）；impossible＝参数化查询（安全示范）。
+  </div>
+</div>
+
+<div class="progress" style="margin-bottom:18px;"><div style="width: {{ (solved / total * 100)|round(0) }}%"></div></div>
+
+{% for category, items in groups.items() %}
+<h2>{{ category }}</h2>
+<div class="grid">
+  {% for it in items %}
+  <a class="card" href="/challenge/{{ it.cid }}">
+    <span class="badge {{ 'ok' if it.solved }}">{{ '✓ 已通关' if it.solved else category }}</span>
+    <h3 style="margin:4px 0; font-size:14px; color:#38bdf8;">{{ it.title }}</h3>
+    <p class="muted" style="margin:0; font-size:12px; line-height:1.6;">点击进入练习</p>
+  </a>
+  {% endfor %}
+</div>
+{% endfor %}
+
+<div class="warnbox">
+  ⚠️ 平台内所有查询接口均<strong>故意存在 SQL 注入漏洞</strong>，仅供授权环境下的安全学习 / 教学 / CTF 训练，禁止用于非法渗透。
+</div>
+{% endblock %}

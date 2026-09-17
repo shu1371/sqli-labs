@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>登录 · 墨香书屋 SQLi Labs</title>
+  <style>
+    body { margin:0; font-family:ui-monospace,Consolas,monospace; background:#0f1419; color:#e2e8f0; display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .box { background:#1a2230; border:1px solid #243044; border-radius:14px; padding:32px; width:340px; }
+    h1 { color:#38bdf8; font-size:20px; margin:0 0 4px; }
+    p.sub { color:#94a3b8; font-size:12px; margin:0 0 20px; }
+    input { width:100%; padding:10px; margin-bottom:12px; background:#0b0f14; border:1px solid #243044; border-radius:8px; color:#e2e8f0; font-family:inherit; }
+    button { width:100%; padding:10px; background:#38bdf8; border:0; border-radius:8px; color:#0b0f14; font-weight:bold; cursor:pointer; font-family:inherit; }
+    .bad { color:#fca5a5; font-size:13px; margin-bottom:10px; }
+    .hint { color:#94a3b8; font-size:11.5px; margin-top:14px; line-height:1.6; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h1>墨香书屋 · 管理入口</h1>
+    <p class="sub">SQLi Labs 训练平台（仿 DVWA 登录门槛）</p>
+    {% if error %}<div class="bad">{{ error }}</div>{% endif %}
+    <form method="POST">
+      <input name="username" placeholder="用户名" autofocus>
+      <input name="password" type="password" placeholder="密码">
+      <button type="submit">登 录</button>
+    </form>
+    <div class="hint">默认账号：admin / admin123（可用环境变量 ADMIN_USER / ADMIN_PASS 覆盖）</div>
+  </div>
+</body>
+</html>

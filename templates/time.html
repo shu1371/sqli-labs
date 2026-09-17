@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>关卡4 · 时间盲注</title>
+  <style>
+    body { margin:0; background:#0f1419; color:#e2e8f0; font-family: ui-monospace, Consolas, monospace; }
+    .wrap { max-width:900px; margin:0 auto; padding:24px; }
+    a { color:#38bdf8; }
+    h1 { color:#38bdf8; }
+    .desc { background:#1a2230; border:1px solid #243044; padding:16px; border-radius:10px; line-height:1.7; font-size:13px; }
+    code { background:#0f1419; padding:2px 6px; border-radius:4px; color:#fbbf24; }
+    form { display:flex; gap:8px; margin:16px 0; }
+    input { flex:1; padding:10px; background:#0f1419; border:1px solid #243044; border-radius:8px; color:#e2e8f0; font-family:inherit; }
+    button { padding:10px 18px; background:#38bdf8; border:0; border-radius:8px; color:#0f1419; font-weight:bold; cursor:pointer; }
+    .box { background:#1a2230; border:1px solid #243044; border-radius:10px; padding:14px; margin-top:12px; }
+    .label { color:#94a3b8; font-size:12px; text-transform:uppercase; letter-spacing:1px; }
+    .sql { color:#fbbf24; }
+    .err { color:#fca5a5; }
+    .time { font-size:20px; font-weight:bold; }
+    .slow { color:#fbbf24; }
+    .fast { color:#4ade80; }
+    .hint { color:#94a3b8; font-size:12px; margin-top:12px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <p><a href="/">← 返回首页</a></p>
+    <h1>关卡 4 · 时间盲注 (Time-Based)</h1>
+    <div class="desc">
+      <b>漏洞类型：</b>字符型注入，参数 <code>name</code> 被 <code>LIKE '%...%'</code> 包裹。<br>
+      <b>特点：</b>页面既无回显也无布尔差异，命中时数据库 <code>sleep(2)</code> 延迟 2 秒，通过响应时间判断。<br>
+      <b>目标：</b>根据响应耗时逐位猜出 <b>flag 表</b>的内容。
+    </div>
+
+    <form method="GET">
+      <input name="name" value="{{ request.args.get('name','') }}" placeholder="输入 name，例如 alice">
+      <button type="submit">查询</button>
+    </form>
+
+    <div class="box">
+      <div class="label">执行的 SQL</div>
+      <div class="sql">{{ query }}</div>
+      {% if error %}
+      <div class="label" style="margin-top:10px;">错误信息</div>
+      <div class="err">{{ error }}</div>
+      {% else %}
+      <div class="label" style="margin-top:10px;">响应耗时</div>
+      <div class="time {{ 'slow' if elapsed >= 1.5 else 'fast' }}">{{ elapsed }} 秒（命中条件则会明显变慢）</div>
+      <div class="label" style="margin-top:10px;">返回行数</div>
+      <div>{{ count }}</div>
+      {% endif %}
+    </div>
+
+    <div class="hint">
+      示例 payload（判断 flag 首字符是否为 F，命中则延迟 2 秒）：<br>
+      <code>x' OR (SELECT substr(secret,1,1) FROM flag)='F' AND 1=sleep(2) OR 'x'='</code>
+    </div>
+  </div>
+</body>
+</html>

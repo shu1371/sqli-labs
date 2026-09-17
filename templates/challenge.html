@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+{% block title %}{{ cfg.title }} · 墨香书屋 SQLi Labs{% endblock %}
+{% block content %}
+<p><a href="/">← 返回关卡列表</a></p>
+<h1>{{ cfg.title }} {% if solved %}<span class="badge ok">✓ 已通关</span>{% endif %}</h1>
+
+<div class="card">
+  <span class="badge">{{ cfg.category }}</span>
+  <p style="font-size:13px; line-height:1.8; margin:6px 0;">{{ cfg.desc }}</p>
+  <p class="warn" style="font-size:13px; margin:6px 0;">🎯 目标：{{ cfg.goal }}</p>
+</div>
+
+<div class="card">
+  <div class="label">难度（当前：{{ level }}）</div>
+  <form method="POST" action="/difficulty" class="inline">
+    {% for lv in difficulties %}
+    <button class="ghost" {% if lv == level %}style="border-color:#38bdf8;color:#38bdf8"{% endif %} name="level" value="{{ lv }}">{{ lv }}</button>
+    {% endfor %}
+  </form>
+</div>
+
+<div class="card">
+  <h2>操作</h2>
+  <form method="{{ cfg.method }}" class="inline">
+    {% for fd in cfg.fields %}
+    <label style="display:flex; flex-direction:column; gap:4px; flex:1; min-width:180px;">
+      <span class="muted" style="font-size:12px;">{{ fd.label }}</span>
+      <input name="{{ fd.name }}" value="{{ (result.fields_echo[fd.name] if result and fd.name in result.fields_echo else fd.value) }}">
+    </label>
+    {% endfor %}
+    <label style="display:flex; flex-direction:column; gap:4px;">
+      <span class="muted" style="font-size:12px;">&nbsp;</span>
+      <button type="submit">提交</button>
+    </label>
+  </form>
+  {% if cfg.method == 'POST' %}<div class="muted" style="font-size:12px;">提示：User-Agent 头注入关卡请用 <code>curl -A "payload" -d "username=a&password=b" {{ request.host_url }}challenge/{{ cid }}</code></div>{% endif %}
+</div>
+
+{% if result %}
+<div class="card">
+  <div class="label">执行的 SQL {% if result.impossible %}（参数化，安全）{% endif %}</div>
+  <pre>{{ result.sql }}</pre>
+
+  {% if result.error %}
+    <div class="label">错误信息</div>
+    <div class="bad" style="word-break:break-all;">{{ result.error }}</div>
+  {% endif %}
+
+  {% if result.rows %}
+    <div class="label">查询结果（{{ result.rows|length }} 行）</div>
+    <table>
+      <tr>{% for c in result.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+      {% for r in result.rows %}<tr>{% for v in r.values() %}<td>{{ v }}</td>{% endfor %}</tr>{% endfor %}
+    </table>
+  {% endif %}
+
+  {% if result.message %}
+    <div class="label">返回消息</div>
+    <div style="font-size:13px;">{{ result.message }}</div>
+  {% endif %}
+
+  {% if result.link %}
+    <p><a href="{{ result.link[0] }}">{{ result.link[1] }} →</a></p>
+  {% endif %}
+
+  {% if result.elapsed is not none %}
+    <div class="label">耗时</div>
+    <div class="{{ 'warn' if result.elapsed >= 1.5 else 'muted' }}" style="font-size:14px;">{{ result.elapsed }} 秒</div>
+  {% endif %}
+</div>
+
+<div class="card">
+  <div class="label">提交 flag（盲注类关卡通关用）</div>
+  <form method="POST" action="/flag/{{ cid }}" class="inline">
+    <input name="flag" placeholder="FLAG{...}">
+    <button type="submit">验证</button>
+  </form>
+</div>
+{% endif %}
+
+<details>
+  <summary>💡 提示</summary>
+  <pre>{{ cfg.hint }}</pre>
+</details>
+
+<details>
+  <summary>🔑 参考答案（先自己试试再看）</summary>
+  <pre>{{ cfg.answer }}</pre>
+</details>
+
+<details>
+  <summary>🛡️ 修复建议（防御方法）</summary>
+  <pre>{{ cfg.fix }}</pre>
+</details>
+{% endblock %}

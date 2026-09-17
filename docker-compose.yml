@@ -1,0 +1,17 @@
+services:
+  sqli-labs:
+    build: .
+    image: sqli-labs:latest
+    container_name: sqli-labs
+    ports:
+      # 部署到云服务器对外开放用 "8000:8000"
+      # 仅本机/经 nginx 反代访问用 "127.0.0.1:8000:8000"
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      # === 部署时请务必修改以下三项 ===
+      - FLAG=FLAG{moxiang_bookstore_pwned}
+      - ADMIN_USER=admin
+      - ADMIN_PASS=admin123
+      - SECRET_KEY=change-me-to-a-random-string
+    restart: unless-stopped

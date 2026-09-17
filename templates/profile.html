@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}我的资料 · 墨香书屋 SQLi Labs{% endblock %}
+{% block content %}
+<p><a href="/">← 返回关卡列表</a></p>
+<h1>我的资料</h1>
+<div class="card">
+  <form method="GET" class="inline">
+    <input name="username" value="{{ username }}" placeholder="输入注册时的用户名">
+    <button type="submit">查询</button>
+  </form>
+  <div class="muted" style="font-size:12px;">本页面使用参数化查询（安全），只能查看已存在的会员资料 —— 所以 insert/update 注入的数据要在这里「二次回显」才能看到。</div>
+</div>
+
+{% if member %}
+<div class="card">
+  <table>
+    <tr><th>用户名</th><td>{{ member.username }}</td></tr>
+    <tr><th>邮箱</th><td>{{ member.email }}</td></tr>
+    <tr><th>个人简介</th><td class="warn">{{ member.bio }}</td></tr>
+  </table>
+</div>
+{% elif username %}
+<div class="card"><div class="bad">未找到用户 {{ username }}</div></div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}管理 · 墨香书屋 SQLi Labs{% endblock %}
+{% block content %}
+<h1>系统管理</h1>
+{% if msg %}<div class="card"><div class="ok">{{ msg }}</div></div>{% endif %}
+
+<div class="card">
+  <h2>重置</h2>
+  <p class="muted" style="font-size:13px;">靶场练习会修改数据库（注册/改资料/写日志）。练习完可以一键恢复初始数据；通关进度保存在浏览器会话中。</p>
+  <form method="POST" class="inline">
+    <button name="action" value="reset_db">重置数据库</button>
+    <button class="ghost" name="action" value="reset_progress">清零通关进度</button>
+  </form>
+</div>
+
+<div class="card">
+  <h2>当前 flag</h2>
+  <pre>{{ flag_set }}</pre>
+  <div class="muted" style="font-size:12px;">通过环境变量 FLAG 可在部署时自定义。所有关卡的最终目标都是拿到这个 flag。</div>
+</div>
+
+<div class="warnbox">
+  ⚠️ 本平台含故意漏洞，请勿将默认口令用于生产环境；部署公网请修改 ADMIN_PASS / SECRET_KEY / FLAG。
+</div>
+{% endblock %}

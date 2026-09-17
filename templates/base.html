@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}墨香书屋 SQLi Labs{% endblock %}</title>
+  <style>
+    :root { --bg:#0f1419; --card:#1a2230; --line:#243044; --accent:#38bdf8; --text:#e2e8f0; --muted:#94a3b8; --ok:#4ade80; --bad:#fca5a5; --warn:#fbbf24; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family:ui-monospace,"Cascadia Code",Consolas,monospace; background:var(--bg); color:var(--text); }
+    nav { display:flex; align-items:center; gap:18px; padding:14px 24px; border-bottom:1px solid var(--line); background:#0b0f14; flex-wrap:wrap; }
+    nav .brand { color:var(--accent); font-weight:bold; font-size:16px; text-decoration:none; }
+    nav a { color:var(--muted); text-decoration:none; font-size:13px; }
+    nav a:hover { color:var(--accent); }
+    nav .spacer { flex:1; }
+    nav .who { color:var(--muted); font-size:12px; }
+    main { max-width:960px; margin:0 auto; padding:24px; }
+    h1 { color:var(--accent); font-size:22px; }
+    h2 { color:var(--text); font-size:16px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:18px; margin-bottom:16px; }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px; }
+    a.card { text-decoration:none; color:inherit; display:block; transition:.15s; }
+    a.card:hover { border-color:var(--accent); transform:translateY(-2px); }
+    .badge { display:inline-block; font-size:11px; padding:2px 8px; border-radius:999px; background:#0ea5e930; color:var(--accent); margin-bottom:8px; }
+    .badge.ok { background:#22c55e25; color:var(--ok); }
+    .muted { color:var(--muted); }
+    .ok { color:var(--ok); } .bad { color:var(--bad); } .warn { color:var(--warn); }
+    code, pre { background:#0b0f14; border:1px solid var(--line); border-radius:6px; padding:2px 6px; color:var(--warn); font-size:12.5px; }
+    pre { padding:10px; overflow-x:auto; white-space:pre-wrap; }
+    form.inline { display:flex; gap:8px; flex-wrap:wrap; margin:10px 0; }
+    input, select { padding:9px 10px; background:#0b0f14; border:1px solid var(--line); border-radius:8px; color:var(--text); font-family:inherit; font-size:13px; }
+    input { flex:1; min-width:160px; }
+    button { padding:9px 16px; background:var(--accent); border:0; border-radius:8px; color:#0b0f14; font-weight:bold; cursor:pointer; font-family:inherit; font-size:13px; }
+    button.ghost { background:transparent; border:1px solid var(--line); color:var(--muted); }
+    table { width:100%; border-collapse:collapse; margin-top:8px; }
+    th, td { border:1px solid var(--line); padding:7px 9px; text-align:left; font-size:13px; word-break:break-all; }
+    th { background:#0b0f14; color:var(--muted); }
+    details { border:1px solid var(--line); border-radius:10px; padding:10px 14px; margin-top:12px; background:#141b26; }
+    summary { cursor:pointer; color:var(--muted); font-size:13px; }
+    details[open] summary { color:var(--accent); margin-bottom:8px; }
+    .label { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:1px; margin-top:10px; }
+    .progress { height:10px; background:#0b0f14; border:1px solid var(--line); border-radius:999px; overflow:hidden; }
+    .progress > div { height:100%; background:var(--accent); }
+    footer { text-align:center; color:var(--muted); font-size:12px; padding:24px; }
+    .warnbox { background:#7f1d1d20; border:1px solid #7f1d1d; color:#fca5a5; padding:10px 14px; border-radius:10px; font-size:12.5px; margin-top:18px; }
+  </style>
+</head>
+<body>
+  <nav>
+    <a class="brand" href="/">墨香书屋 · SQLi Labs</a>
+    <a href="/">关卡列表</a>
+    <a href="/admin/log">访问日志</a>
+    <a href="/admin">管理</a>
+    <span class="spacer"></span>
+    <span class="who">已通关 {{ session.get('solved', [])|length }}/10 · 难度 {{ session.get('difficulty','low') }} · {{ session.get('user','') }}</span>
+    <a href="/logout">退出</a>
+  </nav>
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+  <footer>墨香书屋 SQLi Labs · 仅供授权环境下的安全学习 · {{ request.host }}</footer>
+</body>
+</html>
