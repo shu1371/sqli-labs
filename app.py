@@ -579,7 +579,12 @@ def gate_login():
             session["user"] = ADMIN_USER
             return redirect(url_for("index"))
         error = "用户名或密码错误"
-    return render_template("gate_login.html", error=error)
+    return render_template(
+        "gate_login.html",
+        error=error,
+        demo_user=ADMIN_USER,
+        demo_pass=ADMIN_PASS,
+    )
 
 
 @app.route("/logout")
